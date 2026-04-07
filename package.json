@@ -13,7 +13,8 @@
     "百炼"
   ],
   "files": [
-    "lib"
+    "lib",
+    "CHANGELOG.md"
   ],
   "repository": {
     "type": "git",
