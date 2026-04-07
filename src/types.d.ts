@@ -1,0 +1,392 @@
+export interface ConfigurationOptions {
+
+  /**
+   * API key for authentication. If omitted, read from the `DASHSCOPE_API_KEY` environment variable.
+   */
+  apiKey?: string;
+
+  /**
+   * HTTP API base URL. If omitted, read from `DASHSCOPE_HTTP_BASE_URL`, default `https://dashscope.aliyuncs.com/api/v1`.
+   */
+  basePath?: string;
+
+  /**
+   * DashScope workspace ID, sent as the `X-DashScope-WorkSpace` header.
+   */
+  workspace?: string;
+
+  /**
+   * WebSocket base URL. If omitted, read from `DASHSCOPE_WEBSOCKET_BASE_URL`.
+   */
+  webSocketBasePath?: string;
+}
+
+export interface HistoryItem {
+
+  /**
+   * User input in a legacy history turn.
+   */
+  user: string;
+
+  /**
+   * Model output in a legacy history turn.
+   */
+  bot: string;
+}
+
+export interface MessageItem {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+export interface GenerateOptions {
+
+  /**
+   * Model name (aligned with Python `Generation.Models` where applicable).
+   */
+  model: 'qwen-turbo' | 'qwen-plus' | 'qwen-max' | string;
+
+  /**
+   * Input prompt text.
+   */
+  prompt?: string;
+
+  /**
+   * @deprecated Prefer `messages`.
+   * Legacy multi-turn history: each item is `{"user":"...","bot":"..."}` in chronological order.
+   */
+  history?: HistoryItem[];
+
+  /**
+   * Conversation history as OpenAI-style messages: `{"role","content"}` per turn.
+   * Roles: `system`, `user`, `assistant` (extensible in the future).
+   */
+  messages?: MessageItem[];
+
+  /**
+   * When true, the API returns a stream of partial results.
+   */
+  stream?: boolean;
+
+  /**
+   * `text`: legacy text output shape. `message`: OpenAI-compatible message shape.
+   * @default 'text'
+   */
+  result_format?: 'text' | 'message';
+
+  /**
+   * Random seed for reproducibility. Unsigned 64-bit integer; default 1234 in API docs.
+   */
+  seed?: number;
+
+  /**
+   * Upper bound on generated tokens (not a guarantee of exact count).
+   * Model-specific defaults and maxima apply (e.g. 1500 vs 2048 for different Qwen variants).
+   */
+  max_tokens?: number;
+
+  /**
+   * Nucleus sampling threshold in (0, 1). Higher values increase randomness. Default ~0.8; must be < 1.
+   */
+  top_p?: number;
+
+  /**
+   * Top-k sampling: only the top-k tokens by score are candidates. If empty or k > 100, top-k is disabled and only top_p applies.
+   */
+  top_k?: number;
+
+  /**
+   * Repetition penalty; 1.0 disables. Default ~1.1.
+   */
+  repetition_penalty?: number;
+
+  /**
+   * Sampling temperature in [0, 2). Higher = more diverse; lower = more deterministic. Default 1.0.
+   */
+  temperature?: number;
+
+  /**
+   * Stop sequences: generation stops before emitting the stop string or token id(s).
+   * List form must not mix strings and numeric token ids in one array.
+   */
+  stop?: string | string[] | number[] | number[][];
+
+  /**
+   * Whether to use web search augmentation when supported. Does not force search usage.
+   */
+  enable_search?: boolean;
+
+  /**
+   * Streaming increment mode. When false, each chunk may repeat prior text; when true, chunks are deltas only (you must concatenate).
+   * Only applies with `stream: true`.
+   */
+  incremental_output?: boolean;
+
+  /**
+   * Plugin configuration (e.g. extended search options).
+   */
+  plugins?: string | Record<string, unknown>;
+
+  /**
+   * Enterprise / Bailian customized model id when required.
+   */
+  customized_model_id?: string;
+
+  /**
+   * Escape hatch for forward-compatible parameters. Prefer narrowing with type guards at call sites.
+   */
+  [key: string]: unknown;
+}
+
+export interface ListOptions {
+
+  /** Page number (1-based where applicable). */
+  page_no?: number;
+
+  /** Page size. */
+  page_size?: number;
+}
+
+/** Options for listing thread messages. */
+export interface MessageListOptions {
+  limit?: number;
+  order?: string;
+}
+
+export interface FileUploadOptions {
+
+  /** Local filesystem path to the file. */
+  file_path: string;
+
+  /**
+   * Upload purpose; drives validation. `fine_tune` expects JSONL; `assistants` has no format restriction.
+   */
+  purpose: 'fine_tune' | 'assistants',
+
+  /** Optional file description. */
+  description?: string,
+}
+
+export interface FineTuneOptions {
+
+  model: string;
+
+  /** Training file IDs. */
+  training_file_ids: string[];
+
+  validation_file_ids?: string[];
+
+  hyper_parameters?: Record<string, unknown>;
+
+  /** Training mode: `sft` or `efficient_sft`. */
+  mode?: 'sft' | 'efficient_sft';
+
+  finetuned_output?: string;
+}
+
+export interface TranscriptionOptions {
+
+  model: 'paraformer-v1' | 'paraformer-8k-v1' | 'paraformer-mtl-v1';
+
+  /** URLs of audio/video to transcribe. */
+  file_urls: string[];
+
+  /** Track indices for multi-track media. */
+  channel_id?: number[];
+}
+
+export interface TextEmbeddingOptions {
+
+  /** Model id (aligned with Python `TextEmbedding.Models`). */
+  model: 'text-embedding-v1' | 'text-embedding-v2' | 'text-embedding-v3' | 'text-embedding-v4' | string;
+
+  /** Single string or batch of strings. */
+  input: string | string[];
+
+  /** `query` or `document` for dual-tower models. */
+  text_type?: 'query' | 'document';
+}
+
+/** OpenAI-compatible chat completion request shape. */
+export interface ChatCompletionOptions {
+  model: string;
+  messages: MessageItem[];
+  stream?: boolean;
+  temperature?: number;
+  top_p?: number;
+  top_k?: number;
+  stop?: string | string[];
+  max_tokens?: number;
+  repetition_penalty?: number;
+  /** Extra JSON fields merged into the request body. */
+  extra_body?: Record<string, unknown>;
+  /** Extra HTTP headers. */
+  extra_headers?: Record<string, string>;
+}
+
+/** Models list parameters (Python `ListMixin` alignment). */
+export interface ModelsListOptions {
+  page_no?: number;
+  page_size?: number;
+}
+
+/** Image synthesis parameters. */
+export interface ImageSynthesisOptions {
+  model: string;
+  prompt: string;
+  negative_prompt?: string;
+  images?: string[];
+  sketch_image_url?: string;
+  ref_img?: string;
+  mask_image_url?: string;
+  base_image_url?: string;
+  extra_input?: Record<string, unknown>;
+  task?: string;
+  function?: string;
+  n?: number;
+  size?: string;
+  [key: string]: unknown;
+}
+
+/** One entry in video synthesis `media` (multimodal refs); shape follows Python `VideoSynthesis.call` `media`. */
+export interface VideoSynthesisMediaItem {
+  url?: string;
+  reference_voice?: string;
+  [key: string]: unknown;
+}
+
+/** Video synthesis parameters. */
+export interface VideoSynthesisOptions {
+  model: string;
+  prompt?: string;
+  negative_prompt?: string;
+  img_url?: string;
+  audio_url?: string;
+  reference_video_urls?: string[];
+  /** Reference file URLs (Python `reference_urls`). */
+  reference_urls?: string[];
+  /** Single reference file URL (Python `reference_url`). */
+  reference_url?: string;
+  reference_video_description?: string[];
+  extend_prompt?: boolean;
+  template?: string;
+  extra_input?: Record<string, unknown>;
+  task?: string;
+  head_frame?: string;
+  tail_frame?: string;
+  first_frame_url?: string;
+  last_frame_url?: string;
+  /** Multimodal media list (Python `media`). */
+  media?: VideoSynthesisMediaItem[];
+  duration?: number;
+  size?: string;
+  [key: string]: unknown;
+}
+
+/** One multimodal segment (text and/or image). */
+export interface MultiModalContentItem {
+  text?: string;
+  image?: string;
+}
+
+/** Multimodal message: `content` may be text or an array of multimodal items. */
+export interface MultiModalMessageItem {
+  role: 'user' | 'assistant' | 'system';
+  content: string | MultiModalContentItem[];
+}
+
+/** Multimodal conversation parameters. */
+export interface MultiModalConversationOptions {
+  model: string;
+  messages: MultiModalMessageItem[];
+  stream?: boolean;
+  text?: string;
+  voice?: string;
+  language_type?: string;
+  [key: string]: unknown;
+}
+
+/** Code generation parameters. */
+export interface CodeGenerationOptions {
+  model: string;
+  message: MessageItem[];
+  scene: string;
+  stream?: boolean;
+  n?: number;
+  [key: string]: unknown;
+}
+
+/** Batch text embedding parameters. */
+export interface BatchTextEmbeddingOptions {
+  model: string;
+  url: string;
+  text_type?: 'query' | 'document';
+}
+
+/** Multimodal embedding parameters. */
+export interface MultiModalEmbeddingOptions {
+  model: string;
+  input: MultiModalContentItem[];
+}
+
+/** NLU / understanding parameters. */
+export interface UnderstandingOptions {
+  model: string;
+  sentence: string;
+  labels: string;
+  task?: 'extraction' | 'classification';
+}
+
+/** Text rerank parameters. */
+export interface TextReRankOptions {
+  model: string;
+  query: string;
+  documents: string[];
+  top_n?: number;
+  return_documents?: boolean;
+}
+
+/** Model deployment create parameters. */
+export interface DeploymentOptions {
+  model: string;
+  capacity: number;
+  version?: string;
+  suffix?: string;
+}
+
+/** Assistant tool definition. */
+export interface Tool {
+  type?: string;
+  [key: string]: unknown;
+}
+
+/** Thread creation body. */
+export interface ThreadCreateOptions {
+  messages?: unknown[];
+  metadata?: Record<string, unknown>;
+}
+
+/** Message creation body. */
+export interface MessageCreateOptions {
+  role: string;
+  content: string;
+  file_ids?: string[];
+}
+
+/** Run creation body. */
+export interface RunCreateOptions {
+  assistant_id: string;
+  instructions?: string;
+  tools?: Tool[];
+  [key: string]: unknown;
+}
+
+/** Assistant creation body. */
+export interface AssistantCreateOptions {
+  model: string;
+  name?: string;
+  description?: string;
+  instructions?: string;
+  tools?: Tool[];
+  file_ids?: string[];
+}

@@ -1,0 +1,15 @@
+node_modules/
+lib/
+out/
+dist/
+coverage/
+.idea/
+.vscode-test/
+*.vsix
+.DS_Store
+*.log
+.nodejs-cache
+.env
+.env.*
+!.env.example
+.cursor/

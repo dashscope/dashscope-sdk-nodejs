@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "module": "CommonJS",
+    "noEmit": true
+  },
+  "include": ["src/**/*"]
+}

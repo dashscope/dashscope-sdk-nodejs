@@ -1,0 +1,82 @@
+{
+  "name": "dashscope-sdk-official",
+  "version": "1.25.1",
+  "description": "Official Node.js SDK for Alibaba Cloud Model Studio (DashScope) APIs",
+  "keywords": [
+    "dashscope-sdk-official",
+    "DashScope",
+    "Model Studio",
+    "Qwen",
+    "dashscope",
+    "千问",
+    "灵积",
+    "百炼"
+  ],
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dashscope/dashscope-sdk-nodejs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dashscope/dashscope-sdk-nodejs/issues"
+  },
+  "homepage": "https://github.com/dashscope/dashscope-sdk-nodejs#readme",
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf lib",
+    "typecheck": "tsc --noEmit",
+    "test": "mocha 'test/**/*.test.ts'",
+    "test:live": "cross-env DASHSCOPE_LIVE_API=1 mocha 'test/**/*.test.ts' --timeout 300000",
+    "lint": "eslint src test",
+    "prepublishOnly": "npm run build"
+  },
+  "mocha": {
+    "require": [
+      "ts-node/register",
+      "./test/nock-hooks.cjs"
+    ]
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./lib/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.13.10",
+    "@types/ws": "^8.18.1",
+    "cross-env": "^10.1.0",
+    "dotenv": "^16.4.7",
+    "eslint": "^10.1.0",
+    "mocha": "^11.1.0",
+    "nock": "^14.0.11",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.58.0"
+  },
+  "dependencies": {
+    "axios": "^1.8.4",
+    "ws": "^8.18.1"
+  }
+}
