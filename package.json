@@ -1,6 +1,6 @@
 {
   "name": "dashscope-sdk-official",
-  "version": "1.25.1",
+  "version": "1.25.2",
   "description": "Official Node.js SDK for Alibaba Cloud Model Studio (DashScope) APIs",
   "keywords": [
     "dashscope-sdk-official",
