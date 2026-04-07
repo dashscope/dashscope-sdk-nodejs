@@ -25,8 +25,7 @@
   },
   "homepage": "https://github.com/dashscope/dashscope-sdk-nodejs#readme",
   "scripts": {
-    "build": "tsup",
-    "clean": "rm -rf lib",
+    "build": "rm -rf lib && tsup",
     "typecheck": "tsc --noEmit",
     "test": "mocha 'test/**/*.test.ts'",
     "test:live": "cross-env DASHSCOPE_LIVE_API=1 mocha 'test/**/*.test.ts' --timeout 300000",
