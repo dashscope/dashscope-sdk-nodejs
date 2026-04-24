@@ -18,6 +18,7 @@ import Vocabulary, { VocabularyServiceException } from './audio/asr/vocabulary';
 import AsrPhraseManager from './audio/asr/asrPhraseManager';
 import SpeechSynthesizer, { SpeechSynthesisResult, SpeechSynthesisResponse } from './audio/tts/speechSynthesizer';
 import QwenTtsSynthesizer from './audio/qwenTts/speechSynthesizer';
+import HttpSpeechSynthesizer, { HttpSpeechSynthesisResult, type HttpSpeechSynthesisResponse, type HttpSpeechSynthesisOptions } from './audio/httpTts/httpSpeechSynthesizer';
 import TextEmbedding from './embeddings/text-embedding';
 import EmbeddingResult from './embeddings/text-embedding/result';
 import BatchTextEmbedding from './embeddings/batchTextEmbedding';
@@ -56,8 +57,12 @@ export {
   AsrPhraseManager,
   SpeechSynthesizer,
   QwenTtsSynthesizer,
+  HttpSpeechSynthesizer,
   SpeechSynthesisResult,
   SpeechSynthesisResponse,
+  HttpSpeechSynthesisResult,
+  type HttpSpeechSynthesisResponse,
+  type HttpSpeechSynthesisOptions,
   TextEmbedding,
   BatchTextEmbedding,
   EmbeddingResult,
