@@ -123,6 +123,31 @@ export interface GenerateOptions {
   incremental_output?: boolean;
 
   /**
+   * Presence penalty for controlling content repetition. Range [-2.0, 2.0].
+   */
+  presence_penalty?: number;
+
+  /**
+   * Tool definitions for function calling.
+   */
+  tools?: Record<string, unknown>[];
+
+  /**
+   * Tool selection strategy. `"auto"`, `"none"`, `"required"`, or an object specifying a particular tool.
+   */
+  tool_choice?: string | Record<string, unknown>;
+
+  /**
+   * Enable thinking/reasoning mode (model-dependent).
+   */
+  enable_thinking?: boolean;
+
+  /**
+   * Number of responses to generate (1-4).
+   */
+  n?: number;
+
+  /**
    * Plugin configuration (e.g. extended search options).
    */
   plugins?: string | Record<string, unknown>;
@@ -205,6 +230,18 @@ export interface TextEmbeddingOptions {
 
   /** `query` or `document` for dual-tower models. */
   text_type?: 'query' | 'document';
+
+  /** Output vector dimension. Options: 2048, 1536 (v4), 1024 (default), 768, 512, 256, 128, 64. Only for v3/v4. */
+  dimension?: number;
+
+  /** Output format: `"dense"` (default), `"sparse"`, or `"dense&sparse"`. Only for v3/v4. */
+  output_type?: 'dense' | 'sparse' | 'dense&sparse';
+
+  /** Custom task instruction to guide model understanding of query intent. */
+  instruct?: string;
+
+  /** Additional parameters. */
+  [key: string]: unknown;
 }
 
 /** OpenAI-compatible chat completion request shape. */
@@ -280,6 +317,22 @@ export interface VideoSynthesisOptions {
   media?: VideoSynthesisMediaItem[];
   duration?: number;
   size?: string;
+
+  /** Random seed for video generation. */
+  seed?: number;
+
+  /** Whether to extend prompt. */
+  prompt_extend?: boolean;
+
+  /** Whether to add watermark. */
+  watermark?: boolean;
+
+  /** Output resolution. */
+  resolution?: string;
+
+  /** Aspect ratio, e.g. "16:9". */
+  ratio?: string;
+
   [key: string]: unknown;
 }
 
@@ -303,6 +356,52 @@ export interface MultiModalConversationOptions {
   text?: string;
   voice?: string;
   language_type?: string;
+
+  /** Sampling temperature in [0, 2). Higher = more diverse. */
+  temperature?: number;
+
+  /** Nucleus sampling threshold in (0, 1]. */
+  top_p?: number;
+
+  /** Top-k sampling: only the top-k tokens by score are candidates. */
+  top_k?: number;
+
+  /** Maximum output token count. */
+  max_tokens?: number;
+
+  /** Random seed for reproducibility. */
+  seed?: number;
+
+  /** Stop sequences. */
+  stop?: string | string[];
+
+  /** Repetition penalty; 1.0 disables. */
+  repetition_penalty?: number;
+
+  /** Presence penalty for controlling content repetition. Range [-2.0, 2.0]. */
+  presence_penalty?: number;
+
+  /** `"message"` or `"text"` result format. */
+  result_format?: string;
+
+  /** In streaming mode, output only new tokens (true) vs. cumulative output (false). */
+  incremental_output?: boolean;
+
+  /** Enable web search. */
+  enable_search?: boolean;
+
+  /** Tool definitions for function calling. */
+  tools?: Record<string, unknown>[];
+
+  /** Tool selection strategy. */
+  tool_choice?: string | Record<string, unknown>;
+
+  /** Enable thinking/reasoning mode (model-dependent). */
+  enable_thinking?: boolean;
+
+  /** Number of responses to generate (1-4). */
+  n?: number;
+
   [key: string]: unknown;
 }
 
@@ -327,6 +426,30 @@ export interface BatchTextEmbeddingOptions {
 export interface MultiModalEmbeddingOptions {
   model: string;
   input: MultiModalContentItem[];
+
+  /** Output vector dimensions. Model-specific supported values. */
+  dimension?: number;
+
+  /** Output vector format, currently only `"dense"` is supported. */
+  output_type?: string;
+
+  /** Video frame extraction ratio in range [0,1]. Default: 1.0. */
+  fps?: number;
+
+  /** Custom task instruction to guide model understanding of query intent. */
+  instruct?: string;
+
+  /** Only for qwen3-vl-embedding. When true, fuses all contents into 1 vector. */
+  enable_fusion?: boolean;
+
+  /** Resolution tier: 0/1/2/3. Only for snapshot models. */
+  res_level?: number;
+
+  /** Max video sampling frames, up to 64. Only for snapshot models. */
+  max_video_frames?: number;
+
+  /** Additional parameters. */
+  [key: string]: unknown;
 }
 
 /** NLU / understanding parameters. */
@@ -344,6 +467,12 @@ export interface TextReRankOptions {
   documents: string[];
   top_n?: number;
   return_documents?: boolean;
+
+  /** Custom task instruction to guide ranking strategy. English recommended. */
+  instruct?: string;
+
+  /** Additional parameters. */
+  [key: string]: unknown;
 }
 
 /** Model deployment create parameters. */
