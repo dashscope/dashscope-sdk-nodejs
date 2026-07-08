@@ -11,6 +11,7 @@ import ImageSynthesis from './aigc/imageSynthesis';
 import VideoSynthesis, { VideoSynthesisMediaType } from './aigc/videoSynthesis';
 import MultiModalConversation from './aigc/multimodalConversation';
 import CodeGeneration from './aigc/codeGeneration';
+import ImageGeneration, { ImageGenerationModels } from './aigc/imageGeneration';
 import Transcription from './audio/asr/transcription';
 import Recognition, { type RecognitionResult } from './audio/asr/recognition';
 import TranslationRecognizer from './audio/asr/translationRecognizer';
@@ -48,6 +49,8 @@ export {
   VideoSynthesisMediaType,
   MultiModalConversation,
   CodeGeneration,
+  ImageGeneration,
+  ImageGenerationModels,
   Transcription,
   Recognition,
   type RecognitionResult,

@@ -1,4 +1,5 @@
 import BaseApi from '../../common/baseApi';
+import { getDashscopeUserAgent } from '../../common/userAgent';
 import { GenerateOptions } from '../../types';
 import { shouldModifyIncrementalOutput } from '../../utils/paramUtils';
 import GenerationResult from './result';
@@ -92,7 +93,7 @@ class Generation extends BaseApi {
       parameters.incremental_output = true;
     }
     if (stream) {
-      streamHeaders['User-Agent'] = mergeIncremental ? 'incremental_to_full/1' : 'incremental_to_full/0';
+      streamHeaders['User-Agent'] = `${getDashscopeUserAgent()}; incremental_to_full/${mergeIncremental ? '1' : '0'}`;
     }
 
     return { input, parameters, streamHeaders, mergeIncremental };

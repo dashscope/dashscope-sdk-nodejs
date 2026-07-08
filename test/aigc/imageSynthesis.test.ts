@@ -1,4 +1,4 @@
-import { ok } from 'assert';
+import { ok, strictEqual } from 'assert';
 import nock from 'nock';
 import { Configuration, DashscopeApi } from '../../src/index';
 import { MOCK_HTTP_ORIGIN, testDashscopeConfig, useLiveApi } from '../helpers/mockConfig';
@@ -36,5 +36,32 @@ describe('Image Synthesis', function() {
     });
     ok(result);
     ok(result.output || (result as { data?: unknown }).data);
+  });
+
+  it('wait_timeout returns timeout response', async function() {
+    if (useLiveApi()) {
+      this.skip();
+    }
+    nock(MOCK_HTTP_ORIGIN)
+      .post(createPath)
+      .reply(200, {
+        output: { task_id: taskId },
+        request_id: 'img-create-2',
+      });
+    // Task stays PENDING so the wait_timeout fires
+    nock(MOCK_HTTP_ORIGIN)
+      .persist()
+      .get(`/api/v1/tasks/${taskId}`)
+      .reply(200, {
+        output: { task_status: 'PENDING' },
+        request_id: 'img-poll-2',
+      });
+    const result = await api.createImageSynthesis({
+      model: 'wanx-v1',
+      prompt: 'A test image',
+      wait_timeout: 1,
+    });
+    strictEqual(result.code, 'WaitTaskTimeout');
+    nock.cleanAll();
   });
 });

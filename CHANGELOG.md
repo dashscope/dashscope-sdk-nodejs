@@ -3,7 +3,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/dashscope/dashscope-sdk-nodejs/compare/v1.25.4...HEAD)
+## [Unreleased](https://github.com/dashscope/dashscope-sdk-nodejs/compare/v1.25.5...HEAD)
+
+## [1.25.5](https://github.com/dashscope/dashscope-sdk-nodejs/releases/tag/v1.25.5) - 2026-07-08
+
+### Added
+
+- **ImageGeneration** (`src/aigc/imageGeneration/`): New module for wan2.6-image / wan2.6-t2i image generation, based on a `messages` interface. Supports synchronous (streaming / non-streaming) and asynchronous task modes. Includes `call()`, `asyncCall()`, `fetch()`, `wait()` methods, with `incremental_to_full` streaming merge and `wait_timeout` support. Exported as `ImageGeneration` and `ImageGenerationModels` from the package entry.
+- **Async task `wait_timeout`**: Added optional `wait_timeout` parameter (in seconds) to `ImageSynthesis`, `VideoSynthesis`, `Transcription`, and `BatchTextEmbedding` `call()` methods. When set to a value > 0, the method returns a timeout response (`code: 'WaitTaskTimeout'`, `status_code: 408`) instead of waiting indefinitely. Aligned with Python `BaseAsyncApi.wait(wait_timeout)`.
+- **MultiModalConversation incremental merge**: Added `incremental_to_full` streaming logic to `MultiModalConversation` — when `incremental_output` is `false` and the model supports it, the SDK transparently requests incremental output and merges deltas into a full response, matching `Generation` behavior.
+
+### Fixed
+
+- **Generation `User-Agent` header**: The `incremental_to_full` User-Agent flag now includes the SDK version (`dashscope-sdk-nodejs/x.y.z; incremental_to_full/N`) instead of overriding the entire User-Agent string. Previously the SDK version was lost during streaming requests.
+
+Synced from [dashscope-sdk-python](https://github.com/dashscope/dashscope-sdk-python) **v1.25.24** (tag `v1.25.24`).
 
 ## [1.25.4](https://github.com/dashscope/dashscope-sdk-nodejs/releases/tag/v1.25.4) - 2026-06-09
 

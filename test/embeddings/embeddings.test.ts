@@ -1,4 +1,4 @@
-import { ok } from 'assert';
+import { ok, strictEqual } from 'assert';
 import nock from 'nock';
 import { Configuration, DashscopeApi } from '../../src/index';
 import Result from '../../src/embeddings/text-embedding/result';
@@ -68,5 +68,41 @@ describe('Text embedding', function() {
       text_type: 'query',
     });
     ok(result instanceof Result);
+  });
+});
+
+describe('Batch text embedding wait_timeout', function() {
+  const asyncPath = '/api/v1/services/embeddings/text-embedding/text-embedding-async';
+  const taskId = 'mock-batch-emb-task-1';
+  let api: DashscopeApi;
+
+  before(function() {
+    api = new DashscopeApi(new Configuration(testDashscopeConfig()));
+  });
+
+  it('wait_timeout returns timeout response', async function() {
+    if (useLiveApi()) {
+      this.skip();
+    }
+    nock(MOCK_HTTP_ORIGIN)
+      .post(asyncPath)
+      .reply(200, {
+        output: { task_id: taskId },
+        request_id: 'batch-emb-1',
+      });
+    nock(MOCK_HTTP_ORIGIN)
+      .persist()
+      .get(`/api/v1/tasks/${taskId}`)
+      .reply(200, {
+        output: { task_status: 'PENDING' },
+        request_id: 'batch-emb-poll-1',
+      });
+    const result = await api.createBatchEmbedding({
+      model: 'text-embedding-v2',
+      url: 'https://example.com/batch.jsonl',
+      wait_timeout: 1,
+    });
+    strictEqual(result.code, 'WaitTaskTimeout');
+    nock.cleanAll();
   });
 });

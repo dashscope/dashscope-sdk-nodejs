@@ -2,6 +2,7 @@ import { ok } from 'assert';
 import nock from 'nock';
 import { Configuration, DashscopeApi } from '../../src/index';
 import Result from '../../src/aigc/generation/result';
+import { getDashscopeUserAgent } from '../../src/common/userAgent';
 import { MOCK_HTTP_ORIGIN, sseDataLines, testDashscopeConfig, useLiveApi } from '../helpers/mockConfig';
 
 describe('Generation', function() {
@@ -103,5 +104,33 @@ describe('Generation', function() {
       valid = valid && (chunk instanceof Result);
     }
     ok(valid);
+  });
+
+  it('streaming sends incremental_to_full User-Agent with SDK version', async function() {
+    if (useLiveApi()) {
+      this.skip();
+    }
+    const sse = sseDataLines([
+      { output: { text: 'hello' }, request_id: 's2' },
+    ]);
+    let capturedUA = '';
+    nock(MOCK_HTTP_ORIGIN)
+      .post(path)
+      .reply(200, sse, { 'Content-Type': 'text/event-stream' })
+      .on('request', (req) => {
+        capturedUA = req.headers['user-agent'] as string;
+      });
+    const result = await api.createGeneration({
+      model: 'qwen-turbo',
+      prompt: 'hello',
+      stream: true,
+      incremental_output: false,
+    });
+    for await (const _chunk of result as AsyncGenerator<Result>) {
+      // consume stream
+    }
+    // The UA should include both the SDK version and the incremental_to_full flag
+    ok(capturedUA.includes(getDashscopeUserAgent()));
+    ok(capturedUA.includes('incremental_to_full/1'));
   });
 });

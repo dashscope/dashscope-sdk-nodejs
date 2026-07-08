@@ -40,4 +40,25 @@ describe('VideoSynthesis', function() {
     });
     scope.done();
   });
+
+  it('call with wait_timeout returns timeout response', async function() {
+    if (useLiveApi()) {
+      this.skip();
+    }
+    const taskId2 = 'task-vs-2';
+    nock(MOCK_HTTP_ORIGIN)
+      .post('/api/v1/services/aigc/video-generation/video-synthesis')
+      .reply(200, { output: { task_id: taskId2 }, request_id: 'r2' });
+    nock(MOCK_HTTP_ORIGIN)
+      .persist()
+      .get(`/api/v1/tasks/${taskId2}`)
+      .reply(200, { output: { task_status: 'PENDING' }, request_id: 'r3' });
+    const result = await client.call({
+      model: 'wanx2.1-i2v-plus',
+      prompt: 'hello',
+      wait_timeout: 1,
+    });
+    strictEqual(result.code, 'WaitTaskTimeout');
+    nock.cleanAll();
+  });
 });

@@ -5,6 +5,7 @@ import ImageSynthesis from './aigc/imageSynthesis';
 import VideoSynthesis from './aigc/videoSynthesis';
 import MultiModalConversation from './aigc/multimodalConversation';
 import CodeGeneration from './aigc/codeGeneration';
+import ImageGeneration from './aigc/imageGeneration';
 import File from './file';
 import Models from './models';
 import Deployments from './deployments';
@@ -17,6 +18,7 @@ import {
   TranscriptionOptions, TextEmbeddingOptions, ChatCompletionOptions, ModelsListOptions,
   ImageSynthesisOptions, VideoSynthesisOptions, MultiModalConversationOptions, CodeGenerationOptions,
   BatchTextEmbeddingOptions, MultiModalEmbeddingOptions, UnderstandingOptions, TextReRankOptions,
+  ImageGenerationOptions,
   DeploymentOptions, AssistantCreateOptions,
   ThreadCreateOptions, MessageCreateOptions, RunCreateOptions,
 } from './types';
@@ -58,6 +60,26 @@ class DashscopeApi {
 
   createCodeGeneration(options: CodeGenerationOptions) {
     return new CodeGeneration(this.configuration).call(options);
+  }
+
+  /** Create an image generation task (wan2.6-image / wan2.6-t2i, messages-based). */
+  createImageGeneration(options: ImageGenerationOptions) {
+    return new ImageGeneration(this.configuration).call(options);
+  }
+
+  /** Create an async image generation task. Returns task info with `output.task_id`. */
+  createImageGenerationAsync(options: ImageGenerationOptions) {
+    return new ImageGeneration(this.configuration).asyncCall(options);
+  }
+
+  /** Fetch image generation task status by task id. */
+  fetchImageGenerationTask(taskId: string) {
+    return new ImageGeneration(this.configuration).fetch(taskId);
+  }
+
+  /** Wait for an image generation task to complete, with optional `wait_timeout` (seconds). */
+  waitImageGenerationTask(taskId: string, waitTimeout?: number) {
+    return new ImageGeneration(this.configuration).wait(taskId, waitTimeout);
   }
 
   listModels(options?: ModelsListOptions) {

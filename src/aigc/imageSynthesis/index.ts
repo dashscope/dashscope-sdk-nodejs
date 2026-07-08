@@ -62,8 +62,10 @@ class ImageSynthesis extends BaseApi {
   }
 
   async call(options: ImageSynthesisOptions) {
-    const createResult = await this.asyncCall(options);
-    return waitForTask(createResult, (taskId) => this.fetch(taskId));
+    const { wait_timeout, ...callOptions } = options;
+    const createResult = await this.asyncCall(callOptions);
+    const taskOpts = typeof wait_timeout === 'number' ? { waitTimeout: wait_timeout } : undefined;
+    return waitForTask(createResult, (taskId) => this.fetch(taskId), taskOpts);
   }
 }
 

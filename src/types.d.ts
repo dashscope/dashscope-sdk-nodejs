@@ -218,6 +218,12 @@ export interface TranscriptionOptions {
 
   /** Track indices for multi-track media. */
   channel_id?: number[];
+
+  /**
+   * Maximum seconds to wait for the async transcription task to complete.
+   * Default is -1 (no timeout). When > 0, returns a timeout response on expiry.
+   */
+  wait_timeout?: number;
 }
 
 export interface TextEmbeddingOptions {
@@ -282,6 +288,13 @@ export interface ImageSynthesisOptions {
   function?: string;
   n?: number;
   size?: string;
+
+  /**
+   * Maximum seconds to wait for the async image task to complete.
+   * Default is -1 (no timeout). When > 0, returns a timeout response on expiry.
+   */
+  wait_timeout?: number;
+
   [key: string]: unknown;
 }
 
@@ -332,6 +345,12 @@ export interface VideoSynthesisOptions {
 
   /** Aspect ratio, e.g. "16:9". */
   ratio?: string;
+
+  /**
+   * Maximum seconds to wait for the async video task to complete.
+   * Default is -1 (no timeout). When > 0, returns a timeout response on expiry.
+   */
+  wait_timeout?: number;
 
   [key: string]: unknown;
 }
@@ -405,6 +424,36 @@ export interface MultiModalConversationOptions {
   [key: string]: unknown;
 }
 
+/** Image generation parameters (wan2.6-image / wan2.6-t2i, messages-based interface). */
+export interface ImageGenerationOptions {
+  /** Model id, e.g. `wan2.6-image` or `wan2.6-t2i`. */
+  model: string;
+
+  /** Chat-style messages with role and content (text/image items). */
+  messages: MultiModalMessageItem[];
+
+  /** Enable streaming output. */
+  stream?: boolean;
+
+  /** In streaming mode, output only new tokens (true) vs. cumulative output (false). */
+  incremental_output?: boolean;
+
+  /** Number of responses to generate. */
+  n?: number;
+
+  /** When true, creates an async task instead of a synchronous call. */
+  is_async?: boolean;
+
+  /**
+   * Maximum seconds to wait for the async task to complete.
+   * Default is -1 (no timeout). Only used when `is_async` is true.
+   */
+  wait_timeout?: number;
+
+  /** Additional parameters (seed, size, etc.). */
+  [key: string]: unknown;
+}
+
 /** Code generation parameters. */
 export interface CodeGenerationOptions {
   model: string;
@@ -420,6 +469,12 @@ export interface BatchTextEmbeddingOptions {
   model: string;
   url: string;
   text_type?: 'query' | 'document';
+
+  /**
+   * Maximum seconds to wait for the async embedding task to complete.
+   * Default is -1 (no timeout). When > 0, returns a timeout response on expiry.
+   */
+  wait_timeout?: number;
 }
 
 /** Multimodal embedding parameters. */
