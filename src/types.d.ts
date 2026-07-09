@@ -148,6 +148,41 @@ export interface GenerateOptions {
   n?: number;
 
   /**
+   * Maximum token budget for thinking mode. Controls the maximum length of thinking process.
+   */
+  thinking_budget?: number;
+
+  /**
+   * Whether to return log probabilities of the output tokens.
+   */
+  logprobs?: boolean;
+
+  /**
+   * Number of most likely tokens to return at each token position when `logprobs` is enabled.
+   */
+  top_logprobs?: number;
+
+  /**
+   * Configuration options for web search feature.
+   */
+  search_options?: Record<string, unknown>;
+
+  /**
+   * Enable parallel tool calls for function calling.
+   */
+  parallel_tool_calls?: boolean;
+
+  /**
+   * Format constraint for response, e.g. `{ "type": "json_object" }` for JSON mode.
+   */
+  response_format?: Record<string, unknown>;
+
+  /**
+   * Output format for qwen-deep-research model. Options: `"model_detailed_report"` (default), `"model_summary_report"`.
+   */
+  output_format?: string;
+
+  /**
    * Plugin configuration (e.g. extended search options).
    */
   plugins?: string | Record<string, unknown>;
@@ -289,6 +324,36 @@ export interface ImageSynthesisOptions {
   n?: number;
   size?: string;
 
+  /** Random seed for image generation. */
+  seed?: number;
+
+  /** Output image style. Supported: `<auto>`, `<photography>`, `<portrait>`, `<3d cartoon>`, `<anime>`, `<oil painting>`, `<watercolor>`, `<sketch>`, `<chinese painting>`, `<flat illustration>`. */
+  style?: string;
+
+  /** Control similarity between output and reference image. Range [0.0, 1.0]. Higher = more similar. */
+  ref_strength?: number;
+
+  /** Mode for generating image based on reference image. `"repaint"` (default, based on content) or `"refonly"` (based on style). */
+  ref_mode?: string;
+
+  /** Whether to extend prompt automatically for better results. */
+  prompt_extend?: boolean;
+
+  /** Whether to add watermark. */
+  watermark?: boolean;
+
+  /** List of bounding boxes for region-specific editing. */
+  bbox_list?: Record<string, unknown>[];
+
+  /** Enable sequential generation mode. */
+  enable_sequential?: boolean;
+
+  /** Thinking mode for generation. Supported: `"fast"`, `"balanced"`, `"quality"`. */
+  thinking_mode?: string;
+
+  /** Color palette specification for consistent styling. */
+  color_palette?: string;
+
   /**
    * Maximum seconds to wait for the async image task to complete.
    * Default is -1 (no timeout). When > 0, returns a timeout response on expiry.
@@ -345,6 +410,12 @@ export interface VideoSynthesisOptions {
 
   /** Aspect ratio, e.g. "16:9". */
   ratio?: string;
+
+  /** Shot type for video generation. */
+  shot_type?: string;
+
+  /** Audio setting for video: `"auto"` or `"origin"`. */
+  audio_setting?: string;
 
   /**
    * Maximum seconds to wait for the async video task to complete.
@@ -420,6 +491,15 @@ export interface MultiModalConversationOptions {
 
   /** Number of responses to generate (1-4). */
   n?: number;
+
+  /** OCR task options for qwen-ocr models. */
+  ocr_options?: Record<string, unknown>;
+
+  /** Whether to return log probabilities of the output tokens. */
+  logprobs?: boolean;
+
+  /** Number of most likely tokens to return at each token position when `logprobs` is enabled. */
+  top_logprobs?: number;
 
   [key: string]: unknown;
 }

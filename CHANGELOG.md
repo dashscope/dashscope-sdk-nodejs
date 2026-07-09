@@ -3,7 +3,30 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/dashscope/dashscope-sdk-nodejs/compare/v1.25.5...HEAD)
+## [Unreleased](https://github.com/dashscope/dashscope-sdk-nodejs/compare/v1.26.0...HEAD)
+
+## [1.26.0](https://github.com/dashscope/dashscope-sdk-nodejs/releases/tag/v1.26.0) - 2026-07-08
+
+### Added
+
+- **GenerateOptions**: Added `thinking_budget`, `logprobs`, `top_logprobs`, `search_options`, `parallel_tool_calls`, `response_format`, `output_format` parameters for thinking budget control, log probabilities, web search configuration, parallel tool calls, JSON mode, and deep-research output format.
+- **MultiModalConversationOptions**: Added `ocr_options`, `logprobs`, `top_logprobs` parameters for OCR model support and log probabilities.
+- **ImageSynthesisOptions**: Added explicit `seed`, `style`, `ref_strength`, `ref_mode`, `prompt_extend`, `watermark`, `bbox_list`, `enable_sequential`, `thinking_mode`, `color_palette` parameters (previously only via `kwargs`).
+- **VideoSynthesisOptions**: Added `shot_type` and `audio_setting` parameters for video shot type and audio configuration.
+
+### Fixed
+
+- **CodeGeneration**: Removed `services/` prefix from API path (`aigc/code-generation/generation`), aligning with Python `is_service=False` fix in v1.26.
+- **Understanding**: Removed `services/` prefix from API path (`nlp/nlu/understanding`), aligning with Python `is_service=False` fix in v1.26.
+- **Models.get()**: Rewritten to use query-parameter filtering (`?model={name}&page_no=1&page_size=1`) instead of path-based lookup, returning 404 when model is not found. Aligned with Python `Models.get()` rewrite in v1.26.
+- **WebSocket duplex**: Added `readyState` check before `ws.send()` in `runWebSocketDuplexTask` to prevent errors when the connection closes mid-stream. Aligned with Python WebSocket connection-check fix in v1.26.
+- **UTF-8 encoding**: Updated `Accept` and `Content-Type` headers to include `charset=utf-8`, ensuring non-ASCII characters (e.g. Chinese) are transmitted correctly. Aligned with Python `ensure_ascii=False` fix in v1.26.
+
+### Changed
+
+- **Models.get()** (**Breaking**): Return shape changed from raw response body to `{ ...response, output: model }` on success, or `{ status_code: 404, message, output: null }` when the model is not found. Previously returned the raw response body from path-based lookup (`GET /models/{name}`). Callers that accessed `result.output` directly will still work; callers that accessed other top-level fields should use the new spread-based return shape.
+
+Synced from [dashscope-sdk-python](https://github.com/dashscope/dashscope-sdk-python) **v1.26.2** (tag `v1.26.2`).
 
 ## [1.25.5](https://github.com/dashscope/dashscope-sdk-nodejs/releases/tag/v1.25.5) - 2026-07-08
 

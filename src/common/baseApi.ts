@@ -53,9 +53,9 @@ class BaseApi {
     }
     const finalTimeout = request_timeout ?? timeout;
     const requestHeaders: Record<string, string> = {
-      'Accept': 'application/json',
+      'Accept': 'application/json; charset=utf-8',
       'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
       'User-Agent': getDashscopeUserAgent(),
       ...headers,
     };

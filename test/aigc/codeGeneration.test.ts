@@ -4,7 +4,7 @@ import { Configuration, DashscopeApi } from '../../src/index';
 import { MOCK_HTTP_ORIGIN, testDashscopeConfig, useLiveApi } from '../helpers/mockConfig';
 
 describe('Code Generation', function() {
-  const path = '/api/v1/services/aigc/code-generation/generation';
+  const path = '/api/v1/aigc/code-generation/generation';
   let api: DashscopeApi;
 
   before(function() {

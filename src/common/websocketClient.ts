@@ -345,6 +345,9 @@ export async function* runWebSocketDuplexTask(
   (async () => {
     try {
       for await (const chunk of audioChunks) {
+        // Stop sending if the connection has been closed; the downstream
+        // consumer will see the 'close' event and end the stream naturally.
+        if (ws.readyState !== WebSocket.OPEN) break;
         if (chunk && chunk.length > 0) ws.send(chunk);
       }
       sendFinished();

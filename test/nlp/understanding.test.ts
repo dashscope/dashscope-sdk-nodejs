@@ -4,7 +4,7 @@ import { Configuration, DashscopeApi } from '../../src/index';
 import { MOCK_HTTP_ORIGIN, testDashscopeConfig, useLiveApi } from '../helpers/mockConfig';
 
 describe('Understanding (NLU)', function() {
-  const path = '/api/v1/services/nlp/nlu/understanding';
+  const path = '/api/v1/nlp/nlu/understanding';
   let api: DashscopeApi;
 
   before(function() {
