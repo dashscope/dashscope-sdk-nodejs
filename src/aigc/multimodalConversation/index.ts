@@ -8,6 +8,7 @@ import { parseStreamResult } from '../generation/streamUtils';
 class MultiModalConversation extends BaseApi {
 
   protected service = 'services/aigc/multimodal-generation/generation';
+  protected sdkModule = 'aigc';
 
   private async streamRequest(data: Record<string, unknown>, mergeIncremental: boolean, n: number) {
     const headers: Record<string, string> = {
@@ -35,7 +36,7 @@ class MultiModalConversation extends BaseApi {
   }
 
   async call(options: MultiModalConversationOptions) {
-    const { model, messages, stream = false, text, voice, language_type, incremental_output, n, ...rest } = options;
+    const { model, messages, stream = false, text, voice, language_type, incremental_output, n, pass_through_params, ...rest } = options;
     if (!model) throw new Error('Model is required!');
     const input: Record<string, unknown> = {};
     if (text) input.text = text;
@@ -44,6 +45,7 @@ class MultiModalConversation extends BaseApi {
     if (Array.isArray(messages) && messages.length > 0) input.messages = messages;
     const parameters: Record<string, unknown> = { ...rest };
     if (n !== undefined) parameters.n = n;
+    if (pass_through_params) Object.assign(parameters, pass_through_params);
 
     // Check if we need to merge incremental output (aligned with Python)
     let mergeIncremental = false;

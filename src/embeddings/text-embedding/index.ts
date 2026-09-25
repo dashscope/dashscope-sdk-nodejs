@@ -5,6 +5,7 @@ import EmbeddingResult from './result';
 class TextEmbedding extends BaseApi {
 
   protected service = 'services/embeddings/text-embedding/text-embedding';
+  protected sdkModule = 'embeddings';
 
   async call(options: TextEmbeddingOptions) {
     const { model, input, text_type, ...rest } = options;

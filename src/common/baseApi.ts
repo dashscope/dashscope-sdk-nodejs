@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import Configuration from '../configuration';
 import { DEFAULT_TIMEOUT_MS } from './consts';
+import { getSdkHeaders } from './sdkHeaders';
 import { getDashscopeUserAgent } from './userAgent';
 
 export interface RequestOptions {
@@ -16,12 +17,16 @@ export interface RequestOptions {
   request_timeout?: number;
   /** Per-request workspace header override. */
   workspace?: string;
+  /** SDK module tag for the `x-dashscope-sdk-client` header (overrides the class default). */
+  sdkModule?: string;
 }
 
 class BaseApi {
 
   protected configuration: Configuration;
   protected service: string = '';
+  /** SDK module tag (aligned with Python top-level package, e.g. `aigc`, `audio`). */
+  protected sdkModule: string = '';
 
   constructor(configuration: Configuration) {
     this.configuration = configuration;
@@ -57,6 +62,7 @@ class BaseApi {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json; charset=utf-8',
       'User-Agent': getDashscopeUserAgent(),
+      ...getSdkHeaders(options.sdkModule ?? this.sdkModule),
       ...headers,
     };
     if (workspace) {

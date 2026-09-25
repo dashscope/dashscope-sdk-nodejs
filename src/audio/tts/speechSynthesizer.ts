@@ -63,6 +63,7 @@ export interface SpeechSynthesisResponse {
 
 class SpeechSynthesizer extends BaseApi {
   protected service = 'services/audio/speech-synthesizer/SpeechSynthesizer';
+  protected sdkModule = 'audio';
 
   async call(options: SpeechSynthesisOptions): Promise<SpeechSynthesisResult> {
     const { model, text, timeout = DEFAULT_TIMEOUT_MS, ...rest } = options;
@@ -100,6 +101,7 @@ class SpeechSynthesizer extends BaseApi {
           workspace,
           streaming: 'out',
           timeout,
+          module: 'audio',
         },
         startPayload,
       )) {

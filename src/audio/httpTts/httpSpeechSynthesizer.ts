@@ -116,6 +116,7 @@ interface SseChunk {
 
 class HttpSpeechSynthesizer extends BaseApi {
   protected service = 'services/audio/tts/SpeechSynthesizer';
+  protected sdkModule = 'audio';
 
   /**
    * Convert text to speech via HTTP API.

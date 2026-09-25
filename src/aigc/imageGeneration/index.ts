@@ -26,6 +26,7 @@ class ImageGeneration extends BaseApi {
   private static ASYNC_SERVICE = 'services/aigc/image-generation/generation';
 
   protected service = ImageGeneration.SYNC_SERVICE;
+  protected sdkModule = 'aigc';
 
   /** Synchronous / streaming call. */
   async call(options: ImageGenerationOptions) {
@@ -114,6 +115,7 @@ class ImageGeneration extends BaseApi {
       service: 'tasks',
       api: taskId,
       method: 'get',
+      sdkModule: 'tasks',
       headers: { 'X-DashScope-Async': 'enable' },
     });
     return result.data;

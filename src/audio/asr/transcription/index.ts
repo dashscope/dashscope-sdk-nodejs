@@ -5,12 +5,14 @@ import { TranscriptionOptions } from '../../../types';
 class Transcription extends BaseApi {
 
   protected service = 'services/audio/asr/transcription';
+  protected sdkModule = 'audio';
 
   async fetch(taskId: string) {
     const result = await this.request({
       service: 'tasks',
       api: taskId,
       method: 'get',
+      sdkModule: 'tasks',
       headers: {
         'X-DashScope-Async': 'enable',
       },

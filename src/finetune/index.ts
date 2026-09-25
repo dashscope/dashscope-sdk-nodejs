@@ -4,6 +4,7 @@ import BaseApi from '../common/baseApi';
 class FineTune extends BaseApi {
 
   protected service = 'fine-tunes';
+  protected sdkModule = 'customize';
   private static readonly SUCCESS_STATUS = 'success';
 
   async list(options: ListOptions) {

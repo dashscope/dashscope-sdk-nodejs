@@ -5,6 +5,7 @@ import { AssistantCreateOptions, ListOptions } from '../types';
 class Assistants extends BaseApi {
 
   protected service = 'assistants';
+  protected sdkModule = 'assistants';
 
   /** Create an assistant (model, tools, files, etc.). */
   async call(options: AssistantCreateOptions) {

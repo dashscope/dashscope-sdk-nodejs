@@ -6,6 +6,7 @@ import { DeploymentOptions, ListOptions } from '../types';
 class Deployments extends BaseApi {
 
   protected service = 'deployments';
+  protected sdkModule = 'customize';
 
   /** Create a deployment from model name, capacity, and optional version/suffix. */
   async call(options: DeploymentOptions) {

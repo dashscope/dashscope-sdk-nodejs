@@ -29,13 +29,19 @@ export interface RecognitionOptions {
 
 class Recognition extends BaseApi {
   protected service = 'services/audio/asr/recognition';
+  protected sdkModule = 'audio';
 
   /** Blocking helper: stream a local audio file through the recognizer. */
   async call(filePath: string, options: Partial<RecognitionOptions> = {}): Promise<RecognitionResult> {
     validateAudioFile(filePath);
 
     const config = this.configuration;
-    const { model, format, sampleRate, timeout, phraseId, ...rest } = options as RecognitionOptions;
+    const {
+      model, format, sampleRate, timeout, phraseId,
+      disfluencyRemovalEnabled, diarizationEnabled, speakerCount,
+      timestampAlignmentEnabled, specialWordFilter, audioEventDetectionEnabled,
+      ...rest
+    } = options as RecognitionOptions;
     if (!model || !format || sampleRate === undefined || sampleRate === null) {
       throw new Error('model, format and sampleRate are required');
     }
@@ -45,6 +51,13 @@ class Recognition extends BaseApi {
       sample_rate: sampleRate,
       ...rest,
     };
+    // Map recognition params to their snake_case wire keys (Python parity).
+    if (disfluencyRemovalEnabled !== undefined) parameters.disfluency_removal_enabled = disfluencyRemovalEnabled;
+    if (diarizationEnabled !== undefined) parameters.diarization_enabled = diarizationEnabled;
+    if (speakerCount !== undefined) parameters.speaker_count = speakerCount;
+    if (timestampAlignmentEnabled !== undefined) parameters.timestamp_alignment_enabled = timestampAlignmentEnabled;
+    if (specialWordFilter !== undefined) parameters.special_word_filter = specialWordFilter;
+    if (audioEventDetectionEnabled !== undefined) parameters.audio_event_detection_enabled = audioEventDetectionEnabled;
     const resources = phraseId ? [{ resource_id: phraseId, resource_type: 'asr_phrase' }] : undefined;
 
     const startPayload = {
@@ -66,6 +79,7 @@ class Recognition extends BaseApi {
         apiKey: config.getApiKey(),
         workspace: config.getWorkspace(),
         timeout: timeout ?? DEFAULT_TIMEOUT_MS,
+        module: 'audio',
       },
       startPayload,
       readAudioChunks(filePath),

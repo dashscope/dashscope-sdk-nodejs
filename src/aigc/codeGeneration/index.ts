@@ -6,6 +6,7 @@ import GenerationResult from '../generation/result';
 class CodeGeneration extends BaseApi {
 
   protected service = 'aigc/code-generation/generation';
+  protected sdkModule = 'aigc';
 
   async call(options: CodeGenerationOptions): Promise<GenerationResult | AsyncGenerator<GenerationResult>> {
     const { model, message, scene, stream = false, n = 1, ...rest } = options;

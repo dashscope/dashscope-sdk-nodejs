@@ -68,4 +68,29 @@ describe('MultiModal Conversation', function() {
     ok(capturedUA.includes(getDashscopeUserAgent()));
     ok(capturedUA.includes('incremental_to_full/1'));
   });
+
+  it('merges pass_through_params into parameters and sends sdk headers', async function() {
+    if (useLiveApi()) {
+      this.skip();
+    }
+    let capturedSdkClient = '';
+    nock(MOCK_HTTP_ORIGIN)
+      .post(path, (body: Record<string, unknown>) => {
+        const parameters = body.parameters as Record<string, unknown>;
+        ok(parameters.foo === 'bar');
+        ok(parameters.baz === 42);
+        return true;
+      })
+      .reply(200, { output: { text: 'ok' }, request_id: 'mm-3' })
+      .on('request', (req) => {
+        capturedSdkClient = req.headers['x-dashscope-sdk-client'] as string;
+      });
+    await api.createMultiModalConversation({
+      model: 'qwen-vl-max',
+      messages: [{ role: 'user', content: 'describe' }],
+      pass_through_params: { foo: 'bar', baz: 42 },
+    });
+    ok(capturedSdkClient && capturedSdkClient.startsWith('node-sdk/'));
+    ok(capturedSdkClient.endsWith('/aigc'));
+  });
 });

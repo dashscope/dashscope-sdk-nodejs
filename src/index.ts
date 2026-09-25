@@ -19,6 +19,23 @@ import Vocabulary, { VocabularyServiceException } from './audio/asr/vocabulary';
 import AsrPhraseManager from './audio/asr/asrPhraseManager';
 import SpeechSynthesizer, { SpeechSynthesisResult, SpeechSynthesisResponse } from './audio/tts/speechSynthesizer';
 import QwenTtsSynthesizer from './audio/qwenTts/speechSynthesizer';
+import OmniRealtimeConversation, {
+  MultiModality,
+  AudioFormat,
+  AudioFormatType,
+  AudioSampleRate,
+  AudioFormatConfig,
+  type MultiModalityValue,
+  type AudioFormatTypeValue,
+  type AudioSampleRateValue,
+  type TranslationParams,
+  type TranslationCorpus,
+  type TranscriptionParams,
+  type OmniRealtimeCallback,
+  type OmniRealtimeOptions,
+  type OmniSessionOptions,
+} from './audio/qwenOmni/omniRealtime';
+import { MAAS_REGIONS, SUPPORTED_REGIONS, validateWorkspaceId, validateRegion, resolveBaseURL } from './common/region';
 import HttpSpeechSynthesizer, { HttpSpeechSynthesisResult, type HttpSpeechSynthesisResponse, type HttpSpeechSynthesisOptions } from './audio/httpTts/httpSpeechSynthesizer';
 import TextEmbedding from './embeddings/text-embedding';
 import EmbeddingResult from './embeddings/text-embedding/result';
@@ -60,6 +77,26 @@ export {
   AsrPhraseManager,
   SpeechSynthesizer,
   QwenTtsSynthesizer,
+  OmniRealtimeConversation,
+  MultiModality,
+  type MultiModalityValue,
+  AudioFormat,
+  AudioFormatType,
+  type AudioFormatTypeValue,
+  AudioSampleRate,
+  type AudioSampleRateValue,
+  AudioFormatConfig,
+  type TranslationParams,
+  type TranslationCorpus,
+  type TranscriptionParams,
+  type OmniRealtimeCallback,
+  type OmniRealtimeOptions,
+  type OmniSessionOptions,
+  MAAS_REGIONS,
+  SUPPORTED_REGIONS,
+  validateWorkspaceId,
+  validateRegion,
+  resolveBaseURL,
   HttpSpeechSynthesizer,
   SpeechSynthesisResult,
   SpeechSynthesisResponse,

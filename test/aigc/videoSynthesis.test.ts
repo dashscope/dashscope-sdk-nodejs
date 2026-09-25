@@ -1,7 +1,7 @@
 import { strictEqual } from 'assert';
 import nock from 'nock';
 import { Configuration } from '../../src/index';
-import VideoSynthesis from '../../src/aigc/videoSynthesis';
+import VideoSynthesis, { VideoSynthesisMediaType } from '../../src/aigc/videoSynthesis';
 import { MOCK_HTTP_ORIGIN, testDashscopeConfig, useLiveApi } from '../helpers/mockConfig';
 
 describe('VideoSynthesis', function() {
@@ -60,5 +60,53 @@ describe('VideoSynthesis', function() {
     });
     strictEqual(result.code, 'WaitTaskTimeout');
     nock.cleanAll();
+  });
+
+  it('exposes the new media type enum values', function() {
+    strictEqual(VideoSynthesisMediaType.REFERENCE_AUDIO, 'reference_audio');
+    strictEqual(VideoSynthesisMediaType.FILE, 'file');
+    strictEqual(VideoSynthesisMediaType.LINK, 'link');
+  });
+
+  it('asyncCall puts enable_thinking into parameters and tags sdk module', async function() {
+    if (useLiveApi()) {
+      this.skip();
+    }
+    let capturedSdkClient = '';
+    const scope = nock(MOCK_HTTP_ORIGIN)
+      .post('/api/v1/services/aigc/video-generation/video-synthesis', (body: Record<string, unknown>) => {
+        const parameters = body.parameters as Record<string, unknown>;
+        strictEqual(parameters.enable_thinking, true);
+        strictEqual(parameters.audio_setting, 'auto');
+        return true;
+      })
+      .reply(200, { output: { task_id: 'task-vs-3' }, request_id: 'r4' })
+      .on('request', (req) => {
+        capturedSdkClient = req.headers['x-dashscope-sdk-client'] as string;
+      });
+
+    await client.asyncCall({
+      model: 'wanx2.1-i2v-plus',
+      prompt: 'hello',
+      enable_thinking: true,
+      audio_setting: 'auto',
+    });
+    scope.done();
+    strictEqual(capturedSdkClient.endsWith('/aigc'), true);
+  });
+
+  it('fetch tags the tasks sdk module', async function() {
+    if (useLiveApi()) {
+      this.skip();
+    }
+    let capturedSdkClient = '';
+    nock(MOCK_HTTP_ORIGIN)
+      .get('/api/v1/tasks/task-vs-4')
+      .reply(200, { output: { task_status: 'SUCCEEDED' }, request_id: 'r5' })
+      .on('request', (req) => {
+        capturedSdkClient = req.headers['x-dashscope-sdk-client'] as string;
+      });
+    await client.fetch('task-vs-4');
+    strictEqual(capturedSdkClient.endsWith('/tasks'), true);
   });
 });

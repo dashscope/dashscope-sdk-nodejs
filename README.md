@@ -93,6 +93,9 @@ Optional:
 
 - `DASHSCOPE_HTTP_BASE_URL` — HTTP API base (default `https://dashscope.aliyuncs.com/api/v1`)
 - `DASHSCOPE_WEBSOCKET_BASE_URL` — WebSocket base for streaming audio/TTS
+- `DASHSCOPE_API_REGION` — MaaS region (e.g. `ap-southeast-1`); with `DASHSCOPE_WORKSPACE_ID` resolves base URLs to `{workspace}.{region}.maas.aliyuncs.com`
+- `DASHSCOPE_WORKSPACE_ID` — default workspace id
+- `DASHSCOPE_DISABLE_SDK_HEADERS` — omit the `x-dashscope-sdk-*` identification headers when set
 
 ## Features (overview)
 
@@ -107,6 +110,7 @@ Optional:
 | **Understanding / rerank** | NLU and reranking endpoints |
 | **Files / models / deployments / fine-tunes** | Resource and lifecycle APIs |
 | **Speech** | Transcription (async), streaming ASR, translation, TTS (WebSocket + Qwen HTTP) |
+| **Omni Realtime** | Event-driven realtime multimodal conversation over WebSocket (`OmniRealtimeConversation`) |
 | **Assistants & threads** | Agent-style threads, messages, runs |
 
 ### Generation (sync and stream)
@@ -179,6 +183,10 @@ const config = new Configuration({
   apiKey: 'YOUR-DASHSCOPE-API-KEY',
   basePath: 'https://dashscope.aliyuncs.com/api/v1',
   workspace: 'optional-workspace-id',
+  // Optional MaaS region; resolves base URLs to
+  // `https://{workspace}.{region}.maas.aliyuncs.com/api/v1`.
+  // Also read from DASHSCOPE_API_REGION (workspace from DASHSCOPE_WORKSPACE_ID).
+  region: 'ap-southeast-1',
 });
 ```
 

@@ -3,6 +3,8 @@ import { MessageCreateOptions, MessageListOptions } from '../types';
 
 class Messages extends BaseApi {
 
+  protected sdkModule = 'assistants';
+
   private validateThreadId(threadId: string): void {
     if (!threadId) throw new Error('thread_id is required!');
   }

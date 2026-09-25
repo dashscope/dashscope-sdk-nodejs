@@ -93,6 +93,8 @@ export DASHSCOPE_API_KEY='YOUR-DASHSCOPE-API-KEY'
 
 - `DASHSCOPE_HTTP_BASE_URL` — HTTP API 根地址（默认 `https://dashscope.aliyuncs.com/api/v1`）
 - `DASHSCOPE_WEBSOCKET_BASE_URL` — 流式语音 / TTS 等 WebSocket 根地址
+- `DASHSCOPE_API_REGION` — MaaS 区域（如 `ap-southeast-1`），配合 `DASHSCOPE_WORKSPACE_ID` 解析为 `{workspace}.{region}.maas.aliyuncs.com` 根地址
+- `DASHSCOPE_WORKSPACE_ID` — 默认工作空间 ID
 
 ## 功能概览
 
@@ -107,6 +109,7 @@ export DASHSCOPE_API_KEY='YOUR-DASHSCOPE-API-KEY'
 | **理解与重排** | NLU、rerank |
 | **文件 / 模型 / 部署 / 微调** | 资源与生命周期 API |
 | **语音** | 异步转写、实时 ASR、翻译、TTS（WebSocket + Qwen HTTP） |
+| **Omni 实时** | 事件驱动的实时多模态对话（`OmniRealtimeConversation`，WebSocket） |
 | **Assistants & Threads** | 线程、消息、Run 等 |
 
 更多示例与字段说明见英文 [README.md](./README.md) 或源码与 `test/` 目录。
@@ -118,6 +121,9 @@ const config = new Configuration({
   apiKey: 'YOUR-DASHSCOPE-API-KEY',
   basePath: 'https://dashscope.aliyuncs.com/api/v1',
   workspace: '可选的工作空间 ID',
+  // 可选的 MaaS 区域，解析为 `https://{workspace}.{region}.maas.aliyuncs.com/api/v1`；
+  // 也可通过 DASHSCOPE_API_REGION 环境变量设置（workspace 取 DASHSCOPE_WORKSPACE_ID）。
+  region: 'ap-southeast-1',
 });
 ```
 

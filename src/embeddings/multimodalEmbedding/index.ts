@@ -5,6 +5,7 @@ import MultiModalEmbeddingResult from './result';
 class MultiModalEmbedding extends BaseApi {
 
   protected service = 'services/embeddings/multimodal-embedding/one-peace';
+  protected sdkModule = 'embeddings';
 
   async call(options: MultiModalEmbeddingOptions) {
     const { model, input, ...rest } = options;

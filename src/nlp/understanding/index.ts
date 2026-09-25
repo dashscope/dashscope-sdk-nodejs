@@ -4,6 +4,7 @@ import { UnderstandingOptions } from '../../types';
 class Understanding extends BaseApi {
 
   protected service = 'nlp/nlu/understanding';
+  protected sdkModule = 'nlp';
 
   async call(options: UnderstandingOptions) {
     const { model, sentence, labels, task, ...rest } = options;

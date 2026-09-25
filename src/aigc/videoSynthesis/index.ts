@@ -9,9 +9,12 @@ export const VideoSynthesisMediaType = {
   REFERENCE_IMAGE: 'reference_image',
   REFERENCE_VIDEO: 'reference_video',
   REFERENCE_VOICE: 'reference_voice',
+  REFERENCE_AUDIO: 'reference_audio',
   VIDEO: 'video',
   FIRST_CLIP: 'first_clip',
   DRIVING_AUDIO: 'driving_audio',
+  FILE: 'file',
+  LINK: 'link',
 } as const;
 
 function getVideoTask(task: string | undefined, model: string): string {
@@ -23,6 +26,7 @@ function getVideoTask(task: string | undefined, model: string): string {
 class VideoSynthesis extends BaseApi {
 
   protected service = 'services/aigc/video-generation/video-synthesis';
+  protected sdkModule = 'aigc';
 
   protected getService(task?: string): string {
     const t = task ?? 'video-generation';
@@ -72,6 +76,7 @@ class VideoSynthesis extends BaseApi {
       service: 'tasks',
       api: taskId,
       method: 'get',
+      sdkModule: 'tasks',
       headers: { 'X-DashScope-Async': 'enable' },
     });
     return result.data;

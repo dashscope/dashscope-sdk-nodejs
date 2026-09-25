@@ -6,6 +6,7 @@ import BaseApi from '../common/baseApi';
 class File extends BaseApi {
 
   protected service = 'files';
+  protected sdkModule = 'files';
 
   /** Validate JSONL line-by-line without loading the whole file into memory. */
   private async isJsonl(filePath: string) {

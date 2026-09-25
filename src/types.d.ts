@@ -16,6 +16,14 @@ export interface ConfigurationOptions {
   workspace?: string;
 
   /**
+   * MaaS region, e.g. `ap-southeast-1`, `us-east-1`, `cn-hongkong`,
+   * `eu-central-1`, `ap-northeast-1`, `cn-beijing`. When set, base URLs point
+   * to the region's MaaS endpoint (`{workspace}.{region}.maas.aliyuncs.com`),
+   * which requires a `workspace`. If omitted, read from `DASHSCOPE_API_REGION`.
+   */
+  region?: string;
+
+  /**
    * WebSocket base URL. If omitted, read from `DASHSCOPE_WEBSOCKET_BASE_URL`.
    */
   webSocketBasePath?: string;
@@ -417,6 +425,9 @@ export interface VideoSynthesisOptions {
   /** Audio setting for video: `"auto"` or `"origin"`. */
   audio_setting?: string;
 
+  /** Whether to use Agentic PE (thinking) for video generation. */
+  enable_thinking?: boolean;
+
   /**
    * Maximum seconds to wait for the async video task to complete.
    * Default is -1 (no timeout). When > 0, returns a timeout response on expiry.
@@ -500,6 +511,9 @@ export interface MultiModalConversationOptions {
 
   /** Number of most likely tokens to return at each token position when `logprobs` is enabled. */
   top_logprobs?: number;
+
+  /** Extra parameters merged verbatim into the request `parameters` (Python `pass_through_params`). */
+  pass_through_params?: Record<string, unknown>;
 
   [key: string]: unknown;
 }

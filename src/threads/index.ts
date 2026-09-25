@@ -5,6 +5,7 @@ import { ThreadCreateOptions } from '../types';
 class Threads extends BaseApi {
 
   protected service = 'threads';
+  protected sdkModule = 'assistants';
 
   private validateThreadId(threadId: string): void {
     if (!threadId) throw new Error('thread_id is required!');

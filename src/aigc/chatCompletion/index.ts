@@ -6,6 +6,7 @@ import { parseStreamResult } from '../generation/streamUtils';
 class ChatCompletion extends BaseApi {
 
   protected service = 'chat/completions';
+  protected sdkModule = 'aigc';
 
   protected getRequestBasePath() {
     return this.configuration.getCompatibleBasePath();

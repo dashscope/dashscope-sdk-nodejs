@@ -3,7 +3,25 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/dashscope/dashscope-sdk-nodejs/compare/v1.26.0...HEAD)
+## [Unreleased](https://github.com/dashscope/dashscope-sdk-nodejs/compare/v1.27.0...HEAD)
+
+## [1.27.0](https://github.com/dashscope/dashscope-sdk-nodejs/releases/tag/v1.27.0) - 2026-09-24
+
+### Added
+
+- **Qwen Omni Realtime** (`OmniRealtimeConversation`, `src/audio/qwenOmni/`): New event-driven WebSocket client for the realtime multimodal endpoint (`.../api-ws/v1/realtime`). Provides `connect()`, `updateSession()`, `createItem()`, `appendAudio()`, `appendVideo()`, `commit()`, `clearAppendedAudio()`, `createResponse()`, `cancelResponse()`, `endSession()`/`endSessionAsync()`, `sendRaw()`, `close()`, plus the `OmniRealtimeCallback` interface (`onOpen`/`onClose`/`onEvent`) and supporting types (`MultiModality`, `AudioFormat`, `AudioFormatType`, `AudioSampleRate`, `AudioFormatConfig`, `TranslationParams`, `TranscriptionParams`).
+- **MaaS region support**: `Configuration` accepts a `region` option (also read from `DASHSCOPE_API_REGION`) that resolves base URLs to the region's MaaS endpoint (`{workspace}.{region}.maas.aliyuncs.com`), with the workspace taken from the `workspace` option or `DASHSCOPE_WORKSPACE_ID`. Exported `MAAS_REGIONS`, `SUPPORTED_REGIONS`, `validateWorkspaceId`, `validateRegion`, and `resolveBaseURL`; added `Configuration.getRealtimeBasePath()`.
+- **SDK identification headers**: Every HTTP and WebSocket request now sends `x-dashscope-sdk-client` (`node-sdk/{version}[/{module}]`) and a per-process `x-dashscope-sdk-session-id` for backend statistics. Set `DASHSCOPE_DISABLE_SDK_HEADERS` to omit them. Async task polling requests are tagged with the `tasks` module.
+- **VideoSynthesis**: Added `enable_thinking` parameter (Agentic PE) and the `REFERENCE_AUDIO`, `FILE`, `LINK` values to `VideoSynthesisMediaType`.
+- **Recognition / TranslationRecognizer**: Added the `disfluencyRemovalEnabled`, `diarizationEnabled`, `speakerCount`, `timestampAlignmentEnabled`, `specialWordFilter`, and `audioEventDetectionEnabled` recognition parameters to `TranslationRecognizer` (already present on `Recognition`).
+- **MultiModalConversation**: Added `pass_through_params` — a dict merged verbatim into the request `parameters`.
+
+### Fixed
+
+- **Recognition parameters wire format**: The six recognition parameters are now sent with their correct snake_case keys (`disfluency_removal_enabled`, `diarization_enabled`, `speaker_count`, `timestamp_alignment_enabled`, `special_word_filter`, `audio_event_detection_enabled`). Previously the camelCase option names leaked onto the wire and were ignored by the service.
+- **WebSocket text/binary framing**: The WebSocket client now uses the `isBinary` flag instead of the JS value type to distinguish frames. With `ws` v8, text frames are delivered as `Buffer`, so `task-started` / `result-generated` / `task-finished` events were previously misclassified as binary, which could stall streaming TTS and ASR recognition sessions.
+
+Synced from [dashscope-sdk-python](https://github.com/dashscope/dashscope-sdk-python) **v1.27.7** (tag `v1.27.7`).
 
 ## [1.26.0](https://github.com/dashscope/dashscope-sdk-nodejs/releases/tag/v1.26.0) - 2026-07-08
 

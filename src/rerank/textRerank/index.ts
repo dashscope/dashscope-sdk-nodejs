@@ -5,6 +5,7 @@ import { TextReRankOptions } from '../../types';
 class TextReRank extends BaseApi {
 
   protected service = 'services/rerank/text-rerank/text-rerank';
+  protected sdkModule = 'rerank';
 
   async call(options: TextReRankOptions) {
     const { model, query, documents, ...rest } = options;

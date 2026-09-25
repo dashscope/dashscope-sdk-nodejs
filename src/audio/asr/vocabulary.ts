@@ -26,6 +26,7 @@ class Vocabulary extends BaseApi {
   private static DEFAULT_MODEL = 'speech-biasing';
 
   protected service = Vocabulary.SERVICE_PATH;
+  protected sdkModule = 'audio';
 
   private model = Vocabulary.DEFAULT_MODEL;
   private lastRequestId: string | null = null;

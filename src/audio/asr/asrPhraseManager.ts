@@ -12,6 +12,8 @@ class AsrPhraseManager extends BaseApi {
   private static FINE_TUNES_OUTPUTS_PATH = 'fine-tunes/outputs';
   private static DEFAULT_TRAINING_TYPE = 'compile_asr_phrase';
 
+  protected sdkModule = 'audio';
+
   private validatePhraseId(phraseId: string): void {
     if (!phraseId) throw new Error('phrase_id is required');
   }

@@ -7,6 +7,7 @@ const RUN_STATUS_FINAL = ['completed', 'failed', 'cancelled', 'expired'];
 class Runs extends BaseApi {
 
   protected service = 'threads';
+  protected sdkModule = 'assistants';
 
   private validateThreadId(threadId: string): void {
     if (!threadId) throw new Error('thread_id is required!');

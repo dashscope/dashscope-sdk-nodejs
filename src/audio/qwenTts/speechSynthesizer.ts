@@ -23,6 +23,7 @@ export interface QwenTtsOptions {
 
 class QwenTtsSynthesizer extends BaseApi {
   protected service = 'services/aigc/multimodal-generation/generation';
+  protected sdkModule = 'audio';
 
   async call(options: QwenTtsOptions) {
     const { model, text, voice, stream = false, parameters, ...rest } = options;

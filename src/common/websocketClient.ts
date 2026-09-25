@@ -4,6 +4,7 @@
 import { randomUUID } from 'crypto';
 import WebSocket from 'ws';
 import { DEFAULT_TIMEOUT_MS, HTTP_STATUS_OK } from './consts';
+import { getSdkHeaders } from './sdkHeaders';
 import { getDashscopeUserAgent } from './userAgent';
 
 const ACTION_KEY = 'action';
@@ -51,6 +52,8 @@ export interface WebSocketClientOptions {
   /** Streaming mode: `none` | `in` | `out` | `duplex` (lowercase in wire format). */
   streaming?: (typeof WebsocketStreamingMode)[keyof typeof WebsocketStreamingMode];
   timeout?: number;
+  /** SDK module tag for the `x-dashscope-sdk-client` header (e.g. `audio`). */
+  module?: string;
 }
 
 function buildMessage(header: Record<string, string>, payload: Record<string, unknown>): string {
@@ -90,11 +93,12 @@ export async function* runWebSocketStreamTask(
   options: WebSocketClientOptions,
   startPayload: Record<string, unknown>,
 ): AsyncGenerator<WebSocketStreamPart> {
-  const { url, apiKey, workspace, streaming = 'out', timeout = DEFAULT_TIMEOUT_MS } = options;
+  const { url, apiKey, workspace, streaming = 'out', timeout = DEFAULT_TIMEOUT_MS, module } = options;
   const taskId = generateTaskId();
   const headers: Record<string, string> = {
     Authorization: `Bearer ${apiKey}`,
     'user-agent': getDashscopeUserAgent(),
+    ...getSdkHeaders(module),
   };
   if (workspace) {
     headers['X-DashScope-WorkSpace'] = workspace;
@@ -150,8 +154,9 @@ export async function* runWebSocketStreamTask(
     };
     queueStateRef.current = queueState;
 
-    ws.on('message', (data: Buffer | string) => {
-      const type = Buffer.isBuffer(data) ? 'binary' : 'text';
+    ws.on('message', (data: Buffer | string, isBinary: boolean) => {
+      // ws v8 delivers text frames as Buffer too; rely on `isBinary`, not the JS type.
+      const type = isBinary ? 'binary' : 'text';
       queueState.queue.push({ type, data });
       if (queueState.resolveNext) {
         queueState.resolveNext();
@@ -233,8 +238,8 @@ export async function* runWebSocketStreamTask(
 
 async function waitForEvent(ws: WebSocket, expectedEvent: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    const handler = (data: Buffer | string) => {
-      if (Buffer.isBuffer(data)) return; // task-started is always text
+    const handler = (data: Buffer | string, isBinary: boolean) => {
+      if (isBinary) return; // task-started is always a text frame
       const text = parseMessageData(data);
       let json: Record<string, unknown>;
       try {
@@ -276,12 +281,13 @@ export async function* runWebSocketDuplexTask(
   startPayload: Record<string, unknown>,
   audioChunks: AsyncIterable<Buffer>,
 ): AsyncGenerator<WebSocketStreamPart> {
-  const { url, apiKey, workspace, timeout = DEFAULT_TIMEOUT_MS } = options;
+  const { url, apiKey, workspace, timeout = DEFAULT_TIMEOUT_MS, module } = options;
   const streaming = 'duplex';
   const taskId = generateTaskId();
   const headers: Record<string, string> = {
     Authorization: `Bearer ${apiKey}`,
     'user-agent': getDashscopeUserAgent(),
+    ...getSdkHeaders(module),
   };
   if (workspace) headers['X-DashScope-WorkSpace'] = workspace;
 
@@ -311,9 +317,9 @@ export async function* runWebSocketDuplexTask(
   };
   duplexQueueStateRef.current = duplexQueueState;
 
-  ws.on('message', (data: Buffer | string) => {
+  ws.on('message', (data: Buffer | string, isBinary: boolean) => {
     duplexQueueState.queue.push({
-      type: Buffer.isBuffer(data) ? 'binary' : 'text',
+      type: isBinary ? 'binary' : 'text',
       data,
     });
     if (duplexQueueState.resolveNext) {

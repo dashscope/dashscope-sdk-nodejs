@@ -5,6 +5,7 @@ import { BatchTextEmbeddingOptions } from '../../types';
 class BatchTextEmbedding extends BaseApi {
 
   protected service = 'services/embeddings/text-embedding/text-embedding-async';
+  protected sdkModule = 'embeddings';
 
   async asyncCall(options: BatchTextEmbeddingOptions) {
     const { model, url, text_type, ...rest } = options;
@@ -29,6 +30,7 @@ class BatchTextEmbedding extends BaseApi {
       service: 'tasks',
       api: taskId,
       method: 'get',
+      sdkModule: 'tasks',
       headers: { 'X-DashScope-Async': 'enable' },
     });
     return result.data;

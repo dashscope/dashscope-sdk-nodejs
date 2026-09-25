@@ -5,6 +5,7 @@ import { ModelsListOptions } from '../types';
 class Models extends BaseApi {
 
   protected service = 'models';
+  protected sdkModule = 'models';
 
   async list(options: ModelsListOptions = {}) {
     const { page_no = DEFAULT_PAGE_NO, page_size = DEFAULT_PAGE_SIZE } = options;

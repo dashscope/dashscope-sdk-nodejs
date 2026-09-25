@@ -14,6 +14,7 @@ function getImageTask(task: string | undefined, model: string): string {
 class ImageSynthesis extends BaseApi {
 
   protected service = 'services/aigc/text2image/image-synthesis';
+  protected sdkModule = 'aigc';
 
   protected getService(task?: string): string {
     const t = task ?? 'text2image';
@@ -56,6 +57,7 @@ class ImageSynthesis extends BaseApi {
       service: 'tasks',
       api: taskId,
       method: 'get',
+      sdkModule: 'tasks',
       headers: { 'X-DashScope-Async': 'enable' },
     });
     return result.data;

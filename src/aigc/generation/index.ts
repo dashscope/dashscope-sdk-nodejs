@@ -8,6 +8,7 @@ import { parseStreamResult } from './streamUtils';
 class Generation extends BaseApi {
 
   protected service = 'services/aigc/text-generation/generation';
+  protected sdkModule = 'aigc';
 
   async call(options: GenerateOptions) {
     const { model, prompt, history, messages, stream = false, enable_search, plugins, incremental_output, customized_model_id, ...rest } = options;
